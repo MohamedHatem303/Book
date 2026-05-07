@@ -119,7 +119,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         map: picture,
         ...(number === 0
           ? { roughnessMap: pictureRoughness }
-          : { roughness: 0.1 }),
+          : { roughness: 0.35 }),
         emissive: emissiveColor,
         emissiveIntensity: 0,
       }),
@@ -128,7 +128,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         map: picture2,
         ...(number === pages.length - 1
           ? { roughnessMap: pictureRoughness }
-          : { roughness: 0.1 }),
+          : { roughness: 0.35 }),
         emissive: emissiveColor,
         emissiveIntensity: 0,
       }),
