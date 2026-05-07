@@ -18,10 +18,10 @@ export const Experience = () => {
         panSpeed={1.2}
         screenSpacePanning={true}
       />
-      <Environment preset="studio" background={false} />
+      <Environment preset="studio" background={false} environmentIntensity={0.4} />
       <directionalLight
         position={[2, 5, 2]}
-        intensity={1.5}
+        intensity={1.8}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
