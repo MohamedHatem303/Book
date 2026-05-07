@@ -9,8 +9,8 @@ export const Experience = () => {
         enableRotate={true}
         minAzimuthAngle={0}
         maxAzimuthAngle={0}
-        minPolarAngle={Math.PI /1.85}
-        maxPolarAngle={Math.PI / 1.85}
+        minPolarAngle={Math.PI / 2.4}
+        maxPolarAngle={Math.PI / 1.8}
         enableZoom={true}
         minDistance={2}
         maxDistance={8}
