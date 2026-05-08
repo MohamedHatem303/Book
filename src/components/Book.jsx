@@ -641,8 +641,7 @@
 
 
 
-
-import { useCursor, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { easing } from "maath";
@@ -807,14 +806,6 @@ const Page = ({
   useFrame((_, delta) => {
     if (!skinnedMeshRef.current) return;
 
-    // Hover effect بدون شفافية
-    const tint = highlighted
-      ? new Color("#f3e7c3")
-      : new Color("white");
-
-    skinnedMeshRef.current.material[4].color.copy(tint);
-    skinnedMeshRef.current.material[5].color.copy(tint);
-
     if (lastOpened.current !== opened) {
       turnedAt.current = +new Date();
       lastOpened.current = opened;
@@ -897,28 +888,13 @@ const Page = ({
 
   const [, setPage] = useAtom(pageAtom);
 
-  const [highlighted, setHighlighted] = useState(false);
-
-  useCursor(highlighted);
-
   return (
     <group
       {...props}
       ref={group}
-      onPointerEnter={(e) => {
-        e.stopPropagation();
-        setHighlighted(true);
-      }}
-      onPointerLeave={(e) => {
-        e.stopPropagation();
-        setHighlighted(false);
-      }}
       onClick={(e) => {
         e.stopPropagation();
-
         setPage(opened ? number : number + 1);
-
-        setHighlighted(false);
       }}
     >
       <primitive
