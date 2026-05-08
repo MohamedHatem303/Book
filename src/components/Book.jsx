@@ -651,7 +651,6 @@ import {
   BoxGeometry,
   Color,
   Float32BufferAttribute,
-  MathUtils,
   MeshStandardMaterial,
   Skeleton,
   SkinnedMesh,
@@ -673,6 +672,20 @@ const PAGE_HEIGHT = 1.71;
 const PAGE_DEPTH = 0.003;
 const PAGE_SEGMENTS = 30;
 const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
+
+const resolveTexturePath = (name) => {
+  let fileName = name;
+
+  if (!/\.(png|jpe?g|webp)$/i.test(fileName)) {
+    if (fileName === "book-cover" || fileName === "book-back") {
+      fileName = `${fileName}.jpg`;
+    } else {
+      fileName = `${fileName}.webp`;
+    }
+  }
+
+  return encodeURI(`/textures/${fileName}`);
+};
 
 const pageGeometry = new BoxGeometry(
   PAGE_WIDTH,
@@ -730,22 +743,14 @@ const pageMaterials = [
 ];
 
 pages.forEach((page) => {
-  useTexture.preload(`/textures/${page.front}.jpg`);
-  useTexture.preload(`/textures/${page.back}.jpg`);
+  useTexture.preload(resolveTexturePath(page.front));
+  useTexture.preload(resolveTexturePath(page.back));
 });
 
-const Page = ({
-  number,
-  front,
-  back,
-  page,
-  opened,
-  bookClosed,
-  ...props
-}) => {
+const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
   const [picture, picture2] = useTexture([
-    `/textures/${front}.jpg`,
-    `/textures/${back}.jpg`,
+    resolveTexturePath(front),
+    resolveTexturePath(back),
   ]);
 
   picture.colorSpace = SRGBColorSpace;
@@ -775,13 +780,11 @@ const Page = ({
 
     const materials = [
       ...pageMaterials.map((m) => m.clone()),
-
       new MeshStandardMaterial({
         map: picture,
         roughness: 1,
         metalness: 0,
       }),
-
       new MeshStandardMaterial({
         map: picture2,
         roughness: 1,
@@ -793,8 +796,6 @@ const Page = ({
 
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-
-    // يمنع اختفاء الصفحة فجأة
     mesh.frustumCulled = false;
 
     mesh.add(skeleton.bones[0]);
@@ -811,9 +812,7 @@ const Page = ({
       lastOpened.current = opened;
     }
 
-    let turningTime =
-      Math.min(400, new Date() - turnedAt.current) / 400;
-
+    let turningTime = Math.min(400, new Date() - turnedAt.current) / 400;
     turningTime = Math.sin(turningTime * Math.PI);
 
     let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
@@ -827,29 +826,17 @@ const Page = ({
     for (let i = 0; i < bones.length; i++) {
       const target = i === 0 ? group.current : bones[i];
 
-      const insideCurveIntensity =
-        i < 8 ? Math.sin(i * 0.2 + 0.25) : 0;
-
-      const outsideCurveIntensity =
-        i >= 8 ? Math.cos(i * 0.3 + 0.09) : 0;
-
+      const insideCurveIntensity = i < 8 ? Math.sin(i * 0.2 + 0.25) : 0;
+      const outsideCurveIntensity = i >= 8 ? Math.cos(i * 0.3 + 0.09) : 0;
       const turningIntensity =
-        Math.sin(i * Math.PI * (1 / bones.length)) *
-        turningTime;
+        Math.sin(i * Math.PI * (1 / bones.length)) * turningTime;
 
       let rotationAngle =
-        insideCurveStrength *
-          insideCurveIntensity *
-          targetRotation -
-        outsideCurveStrength *
-          outsideCurveIntensity *
-          targetRotation +
-        turningCurveStrength *
-          turningIntensity *
-          targetRotation;
+        insideCurveStrength * insideCurveIntensity * targetRotation -
+        outsideCurveStrength * outsideCurveIntensity * targetRotation +
+        turningCurveStrength * turningIntensity * targetRotation;
 
-      let foldRotationAngle =
-        degToRad(Math.sign(targetRotation) * 2);
+      let foldRotationAngle = degToRad(Math.sign(targetRotation) * 2);
 
       if (bookClosed) {
         if (i === 0) {
@@ -871,9 +858,7 @@ const Page = ({
 
       const foldIntensity =
         i > 8
-          ? Math.sin(
-              i * Math.PI * (1 / bones.length) - 0.5
-            ) * turningTime
+          ? Math.sin(i * Math.PI * (1 / bones.length) - 0.5) * turningTime
           : 0;
 
       easing.dampAngle(
@@ -908,7 +893,6 @@ const Page = ({
 
 export const Book = ({ ...props }) => {
   const [page] = useAtom(pageAtom);
-
   const [delayedPage, setDelayedPage] = useState(page);
 
   useEffect(() => {
@@ -919,14 +903,9 @@ export const Book = ({ ...props }) => {
         if (page === delayedPage) {
           return delayedPage;
         } else {
-          timeout = setTimeout(
-            () => {
-              goToPage();
-            },
-            Math.abs(page - delayedPage) > 2
-              ? 50
-              : 150
-          );
+          timeout = setTimeout(() => {
+            goToPage();
+          }, Math.abs(page - delayedPage) > 2 ? 50 : 150);
 
           if (page > delayedPage) {
             return delayedPage + 1;
@@ -954,10 +933,7 @@ export const Book = ({ ...props }) => {
           page={delayedPage}
           number={index}
           opened={delayedPage > index}
-          bookClosed={
-            delayedPage === 0 ||
-            delayedPage === pages.length
-          }
+          bookClosed={delayedPage === 0 || delayedPage === pages.length}
           {...pageData}
         />
       ))}
