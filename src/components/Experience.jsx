@@ -1,14 +1,18 @@
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Book } from "./Book";
+import { useMediaQuery } from "react-responsive";
+
 
 export const Experience = () => {
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+
   return (
     <>
-      <Book position={[0, 0, 0.64]} />
+      <Book position={isMobile ? [-0.15, 0.4, 3] : [0, 0, 0.64]} />
       <OrbitControls
         enableRotate={true}
-        minAzimuthAngle={0}
-        maxAzimuthAngle={0}
+        minAzimuthAngle={-Math.PI / 4}
+        maxAzimuthAngle={Math.PI / 4}
         minPolarAngle={Math.PI / 2.4}
         maxPolarAngle={Math.PI / 1.8}
         enableZoom={true}
