@@ -8,11 +8,11 @@ export const Experience = () => {
 
   return (
     <>
-      <Book position={isMobile ? [-0.15, 0.4, 3] : [0, 0, 0.64]} />
+      <Book position={isMobile ? [-0.04, 0.4, 3] : [0, 0, 0.64]} />
       <OrbitControls
         enableRotate={true}
-        minAzimuthAngle={-Math.PI / 4}
-        maxAzimuthAngle={Math.PI / 4}
+        minAzimuthAngle={0}
+        maxAzimuthAngle={0}
         minPolarAngle={Math.PI / 2.4}
         maxPolarAngle={Math.PI / 1.8}
         enableZoom={true}
