@@ -16,8 +16,8 @@ export const Experience = () => {
         minPolarAngle={Math.PI / 2.4}
         maxPolarAngle={Math.PI / 1.8}
         enableZoom={true}
-        minDistance={2}
-        maxDistance={8}
+        minDistance={isMobile ? 5 : 3}
+        maxDistance={isMobile ? 8 : 8}
         enablePan={true}
         panSpeed={1.2}
         screenSpacePanning={true}
