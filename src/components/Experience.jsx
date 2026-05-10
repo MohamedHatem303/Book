@@ -8,7 +8,7 @@ export const Experience = () => {
 
   return (
     <>
-      <Book position={isMobile ? [-0.01, 0.5, 3] : [0, 0, 0.64]} />
+      <Book position={isMobile ? [-0.01, 0.5, 3] : [0, 0.2, 0.64]} />
       <OrbitControls
         enableRotate={true}
         minAzimuthAngle={isMobile ? 0 : -0.2}
@@ -36,7 +36,7 @@ export const Experience = () => {
       <directionalLight
         position={[2, 5, 2]}
         intensity={1.8}
-        castShadow
+        castShadow={isMobile ? false : true}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-bias={-0.0001}
