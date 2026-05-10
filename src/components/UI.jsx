@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const pictures = [
   "P (1).webp",
@@ -43,14 +43,49 @@ pages.push({
 
 export const UI = () => {
   const [page, setPage] = useAtom(pageAtom);
+  const [hideHint, setHideHint] = useState(false);
+
+  useEffect(() => {
+    const hide = () => setHideHint(true);
+
+    window.addEventListener("pointerdown", hide, { once: true });
+
+    return () => {
+      window.removeEventListener("pointerdown", hide);
+    };
+  }, []);
 
   useEffect(() => {
     const audio = new Audio("/audios/page-flip-01a.mp3");
-    audio.play();
+    audio.play().catch(() => {});
   }, [page]);
 
   return (
     <main className="pointer-events-none select-none z-10 fixed inset-0 flex justify-end flex-col">
+      <div
+        className={`absolute top-10 left-1/2 -translate-x-1/2 text-center transition-all duration-500 ${
+          hideHint ? "opacity-0 translate-y-[-8px]" : "opacity-100"
+        }`}
+      >
+        <div className="flex items-center justify-center mt-6 text-white/60 text-[10px] md:text-sm whitespace-nowrap gap-2">
+          <span>You can zoom or move the book with two fingers</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5 shrink-0"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"
+            />
+          </svg>
+        </div>
+      </div>
+
       <div className="w-full overflow-auto pointer-events-auto flex justify-center">
         <div className="overflow-auto flex items-center gap-4 max-w-full p-10">
           {[...pages].map((_, index) => (
@@ -66,6 +101,7 @@ export const UI = () => {
               {index === 0 ? "Cover" : `Page ${index}`}
             </button>
           ))}
+
           <button
             className={`border-transparent hover:border-white transition-all duration-300 px-4 py-3 rounded-full text-lg uppercase shrink-0 border ${
               page === pages.length
